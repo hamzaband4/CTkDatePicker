@@ -3,6 +3,8 @@ import customtkinter as ctk
 from datetime import datetime
 import calendar
 
+FONT=("arial", 20)
+
 class CTkDatePicker(ctk.CTkFrame):
     def __init__(self, master=None, **kwargs):
         """
@@ -17,16 +19,16 @@ class CTkDatePicker(ctk.CTkFrame):
 
         super().__init__(master, **kwargs)
 
-        self.date_entry = ctk.CTkEntry(self)
-        self.date_entry.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
+        self.date_entry = ctk.CTkEntry(self, width=200, height=50, font=FONT, state="disabled")
+        self.date_entry.grid(row=0, column=0, sticky="ew")
 
-        self.calendar_button = ctk.CTkButton(self, text="▼", width=20, command=self.open_calendar)
-        self.calendar_button.grid(row=0, column=1, sticky="ew", padx=5, pady=5)
+        self.calendar_button = ctk.CTkButton(self, text="▼", width=40, height=50, font=FONT, command=self.open_calendar)
+        self.calendar_button.grid(row=0, column=1, padx=2, sticky="ew")
 
         self.popup = None
         self.selected_date = None
-        self.date_format = "%m/%d/%Y"
-        self.allow_manual_input = True
+        self.date_format = "%d/%m/%Y"
+        self.allow_manual_input = False
         self.allow_change_month = True
         self.add_months = 0
         self.subtract_months = 0
@@ -111,21 +113,21 @@ class CTkDatePicker(ctk.CTkFrame):
                 self.current_month -= 1
 
         # Month and Year Selector
-        month_label = ctk.CTkLabel(self.calendar_frame, text=f"{calendar.month_name[self.current_month].capitalize()}, {self.current_year}")
+        month_label = ctk.CTkLabel(self.calendar_frame, text=f"{calendar.month_name[self.current_month].capitalize()}, {self.current_year}", font=FONT)
         month_label.grid(row=0, column=1, columnspan=5)
 
         if self.allow_change_month:
-            prev_month_button = ctk.CTkButton(self.calendar_frame, text="<", width=5, command=self.prev_month)
+            prev_month_button = ctk.CTkButton(self.calendar_frame, text="<", width=5, font=FONT, command=self.prev_month)
             prev_month_button.grid(row=0, column=0)
 
-            next_month_button = ctk.CTkButton(self.calendar_frame, text=">", width=5, command=self.next_month)
+            next_month_button = ctk.CTkButton(self.calendar_frame, text=">", width=5, font=FONT, command=self.next_month)
             next_month_button.grid(row=0, column=6)
 
         # Days of the week header
         days = [calendar.day_name[i][:3].capitalize() for i in range(7)]
         for i, day in enumerate(days):
-            lbl = ctk.CTkLabel(self.calendar_frame, text=day)
-            lbl.grid(row=1, column=i)
+            lbl = ctk.CTkLabel(self.calendar_frame, text=day, font=FONT)
+            lbl.grid(row=1, column=i, padx=3)
 
         # Days in month
         month_days = calendar.monthrange(self.current_year, self.current_month)[1]
@@ -134,16 +136,16 @@ class CTkDatePicker(ctk.CTkFrame):
         for week in range(2, 8):
             for day_col in range(7):
                 if week == 2 and day_col < start_day:
-                    lbl = ctk.CTkLabel(self.calendar_frame, text="")
+                    lbl = ctk.CTkLabel(self.calendar_frame, text="", font=FONT)
                     lbl.grid(row=week, column=day_col)
                 elif day > month_days:
-                    lbl = ctk.CTkLabel(self.calendar_frame, text="")
+                    lbl = ctk.CTkLabel(self.calendar_frame, text="", font=FONT)
                     lbl.grid(row=week, column=day_col)
                 else:
                     if ctk.get_appearance_mode() == "Light":
-                        btn = ctk.CTkButton(self.calendar_frame, text=str(day), width=3, command=lambda day=day: self.select_date(day), fg_color="transparent", text_color="black", hover_color="#3b8ed0")
+                        btn = ctk.CTkButton(self.calendar_frame, text=str(day), width=3, command=lambda day=day: self.select_date(day), fg_color="transparent", text_color="black", hover_color="#3b8ed0", font=FONT)
                     else:
-                        btn = ctk.CTkButton(self.calendar_frame, text=str(day), width=3, command=lambda day=day: self.select_date(day), fg_color="transparent")
+                        btn = ctk.CTkButton(self.calendar_frame, text=str(day), width=3, command=lambda day=day: self.select_date(day), fg_color="transparent", font=FONT)
                     btn.grid(row=week, column=day_col)
                     day += 1
 
